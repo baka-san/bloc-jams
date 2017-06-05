@@ -85,7 +85,7 @@ window.onload = function() {
 
 		// Gran't try
 		var albumViewSongItem = event.target.parentElement;
-		var songItemNumber = albumViewSongItem.childNodes[1];
+		var songItemNumber = albumViewSongItem.querySelector('.song-item-number');
 	    songItemNumber.innerHTML = playButtonTemplate;
 
 	    albumViewSongItem.addEventListener('mouseleave', function(event) {
