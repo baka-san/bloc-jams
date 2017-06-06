@@ -1,4 +1,5 @@
 window.onload = function() {
+
 	// Global variables
 	var albumTitle = document.getElementsByClassName('album-view-title')[0];
 	var albumArtist = document.getElementsByClassName('album-view-artist')[0];
@@ -75,16 +76,31 @@ window.onload = function() {
 	//=========== GRANT'S CODE =================
 
 	var findParentByClassName = function(element, desiredParent) {
+		// Find the parent of the given element
 		var currentParent = element.parentElement;
-		while (currentParent && currentParent.className !== null) {
-			if (currentParent.className == desiredParent) {
-				return currentParent;
-			}
-			else {
-				currentParent = currentParent.parentElement;
-			}
-		} 
+
+		// Does the parent exist?
+		if (typeof currentParent === ('undefined' || 'null')) {
+			return console.log("No parent found, Harry Potter.");
+		}
+			
+		while (currentParent.className !== desiredParent
+			    && typeof currentParent !== ('null' || 'undefined')) {
+
+			// Go to the next parent
+			currentParent = currentParent.parentElement;
+		}
+
+		if (typeof currentParent.parentElement === 'undefined'
+			|| typeof currentParent.parentElement === 'null') {
+			return console.log("That's not your parent's name, Harry Potter.")
+		}
+
+		return currentParent;
 	};
+
+	var name = findParentByClassName(albumImage,'voldermort');
+	
 
 	var getSongItem = function(element) {
 		switch (element.className) {
