@@ -76,31 +76,30 @@ window.onload = function() {
 	//=========== GRANT'S CODE =================
 
 	var findParentByClassName = function(element, desiredParent) {
-		// Find the parent of the given element
-		var currentParent = element.parentElement;
+		if(element) {
+			// Does the parent exist?
+			if (element.parentElement == null) {
+				return console.log("No parent found, Harry Potter.");
+			}
+				
+			// Find the parent of the given element
+			var currentParent = element.parentElement;
 
-		// Does the parent exist?
-		if (typeof currentParent === ('undefined' || 'null')) {
-			return console.log("No parent found, Harry Potter.");
+			while (currentParent !== null
+				    && currentParent.className !== desiredParent) {
+
+				// Go to the next parent
+				currentParent = currentParent.parentElement;
+			}
+
+			// No parent was found by that name
+			if (currentParent == null) {
+				return console.log("That's not your parent's name, Harry Potter.")
+			}
+
+			return currentParent;
 		}
-			
-		while (currentParent.className !== desiredParent
-			    && typeof currentParent !== ('null' || 'undefined')) {
-
-			// Go to the next parent
-			currentParent = currentParent.parentElement;
-		}
-
-		if (typeof currentParent.parentElement === 'undefined'
-			|| typeof currentParent.parentElement === 'null') {
-			return console.log("That's not your parent's name, Harry Potter.")
-		}
-
-		return currentParent;
 	};
-
-	var name = findParentByClassName(albumImage,'voldermort');
-	
 
 	var getSongItem = function(element) {
 		switch (element.className) {
