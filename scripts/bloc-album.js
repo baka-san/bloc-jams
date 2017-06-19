@@ -1,5 +1,5 @@
 
-$(function(){ 
+$(document).ready(function(){
 	// Global variables with jQuery
 	var $albumTitle = $('.album-view-title');
 	var $albumArtist = $('.album-view-artist');
@@ -51,63 +51,6 @@ $(function(){
 
 	    var $row = $(template);
 
-	 //GRANT
-	//     var clickHandler =  function() {
-
- //    		var songNumber = $(this).attr('data-song-number');
-
- //    		// if (currentlyPlayingSong !== null) {
- //    		// 	var currenlyPlayingCell = 
- //    		// 	  $('.song-item-number[data-song-number="' + currentlyPlayingSong + '"]');
- //    		// 	currentlyPlayingCell.html(currentlyPlayingCell.attr('data-song-number'));
-
- //    		// }
-
- //    		if (currentlyPlayingSong === null) {
- //    		   $(this).html(pauseButtonTemplate);
- //    			currentlyPlayingSong = songNumber;
- //    		} else if (currentlyPlayingSong === songNumber) {
- //    		    $(this).html(playButtonTemplate);
- //    		    currentlyPlayingSong = null;
- //    		} else if (currentlyPlayingSong !== songNumber) {
- //    			var currentlyPlayingSongElement = $('.song-item-number[data-song-number="' + currentlyPlayingSong + '"]');
- //    		    currentlyPlayingSongElement.html(currentlyPlayingSongElement.attr('data-song-number'));
- //    		    $(this).html(pauseButtonTemplate);
- //    		    currentlyPlayingSong = songNumber;
- //    		} 
-
-	//     };
-
-	//     var onHover = function(event) {
-	// 		var songItem = $(this).find('.song-item-number');
-	// 		var songNumber = songItem.attr('data-song-number');
-
-	// 		// Display play button on mouseover/mouseleave IF NOT playing
-	// 		if (songNumber !== currentlyPlayingSong) {
-
-	// 	    	// Change to play button on mouseover
-	// 	    	songItem.html(playButtonTemplate);
-	// 	    };
-	//     };
-
-	//     var offHover = function(event) {
-	//     	var songItem = $(this).find('.song-item-number');
-	//     	var songNumber = songItem.attr("data-song-number");
-
- //        	if (songNumber !== currentlyPlayingSong) {
- //        		songItem.html(songNumber);
- //        	}
-	//     };
-
-	//     $row.find('.song-item-number').click(clickHandler);
-	//     $row.hover(onHover, offHover);
-	//     return $row;
-	// };
-
-
-
-	// ========= BLOC ==========
-
 		var clickHandler = function() {
 			var songNumber = $(this).attr('data-song-number');
 
@@ -144,6 +87,7 @@ $(function(){
 	            songNumberCell.html(songNumber);
 	        }
 		};
+
 	    $row.find('.song-item-number').click(clickHandler);
 	    $row.hover(onHover, offHover);
 	    return $row;
