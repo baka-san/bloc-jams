@@ -101,9 +101,6 @@ $(function(){
 	    };
 
 	    var playSong = function() {
-	    	// change the pause play button to pause
-	        //$(this).html(pauseButtonTemplate);
-
 	    	// update player bar song name
 	    	updatePlayerBarSong();
 
@@ -231,6 +228,55 @@ $(function(){
         currentSoundFile.play();
 	};
 
+	var togglePlayFromPlayerBar = function() {
+
+		// A song has been selected
+		if (currentSoundFile) {
+
+			// Song is currently paused	
+			if (currentSoundFile.isPaused()) {
+				// Change song list to pause button
+				var SongElement = getSongNumberCell(currentlyPlayingSongNumber);
+				SongElement.html(pauseButtonTemplate);
+
+				// change player bar play button to pause
+				$('.player-bar .play-pause > span').attr('class', 'ion-pause');
+
+				// Play the song
+				currentSoundFile.play();
+			} 
+
+			// Song is currently playing
+			else {
+				// Change song list to pause button
+				var SongElement = getSongNumberCell(currentlyPlayingSongNumber);
+				SongElement.html(playButtonTemplate);
+
+				// change player bar play button to pause
+				$('.player-bar .play-pause > span').attr('class', 'ion-play');
+
+				// Play the song
+				currentSoundFile.pause();
+			}
+		}
+
+		// No song has been selected, play first
+		else {
+
+
+			// // Change the pause play button to pause
+			// $('.song-item-number').first()html(pauseButtonTemplate);
+
+			// // Update song variable info
+			// setSong(songNumber);
+
+			// // Play the song, update player attributes
+			// playSong();
+			//debugger;
+			//$('.song-item-number').first().trigger('click',clickHandler);
+		}
+	};
+
 	// Album button templates
 	var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
 	var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause"></span></a>';
@@ -241,5 +287,6 @@ $(function(){
 	// Set next button listener
 	$('.main-controls .next').click(nextSong);
 	$('.main-controls .previous').click(previousSong);
+	$('.main-controls .play-pause').click(togglePlayFromPlayerBar);
 });
 
