@@ -130,60 +130,46 @@ $(function(){
 		return album.songs.indexOf(song);
 	};
 
-	// Next button: go to next song
-	var nextSong = function() {
+	// Go to next or previous song
+	var switchSong = function() {
 
 	    // switch current song back to a song number
 	    var currentSongElement = getSongNumberCell(currentlyPlayingSongNumber);
 	    currentSongElement.html(currentSongElement.attr('data-song-number'));
 
-		// Find next song's index
-		var nextSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
-		nextSongIndex++;
+	    // Find current song index
+	    var incSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
 
-		// Check if it's the last song
-		if (nextSongIndex >= currentAlbum.songs.length) {
-			nextSongIndex = 0;
-		};
+	    // Next or Previous button?
+	    if ($(this).hasClass('next')) {
+			// Find next song's index
+			incSongIndex++;
+
+			// Check if it's the last song
+			if (incSongIndex >= currentAlbum.songs.length) {
+				incSongIndex = 0;
+			};
+		}
+		else {
+			// Find prev song's index
+			incSongIndex--;
+
+			// Check if it's the first song
+			if (incSongIndex < 0) {
+				incSongIndex = currentAlbum.songs.length - 1;
+			};
+
+		}
 
 		// update currentSongFromAlbum 
-		currentSongFromAlbum = currentAlbum.songs[nextSongIndex];
+		currentSongFromAlbum = currentAlbum.songs[incSongIndex];
 
 	    // update currentlyPlayingSongNumber
-		currentlyPlayingSongNumber = nextSongIndex + 1;
+		currentlyPlayingSongNumber = incSongIndex + 1;
 
-        // update next song, change to pause button
+        // update next/prev song, change to pause button
         var nextSongElement = getSongNumberCell(currentlyPlayingSongNumber);
         nextSongElement.html(pauseButtonTemplate);
-
-        // update player bar song name
-        updatePlayerBarSong();
-	};
-
-	// Previous button: go to previous song
-	var previousSong = function() {
-	    // switch current song back to a song number
-	    var currentSongElement = getSongNumberCell(currentlyPlayingSongNumber);
-	    currentSongElement.html(currentSongElement.attr('data-song-number'));
-
-		// Find next song's index
-		var prevSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
-		prevSongIndex--;
-
-		// Check if it's the last song
-		if (prevSongIndex < 0) {
-			prevSongIndex = currentAlbum.songs.length - 1;
-		};
-
-		// update currentSongFromAlbum 
-		currentSongFromAlbum = currentAlbum.songs[prevSongIndex];
-
-	    // update currentlyPlayingSongNumber
-		currentlyPlayingSongNumber = prevSongIndex + 1;
-
-        // update next song, change to pause button
-        var prevSongElement = getSongNumberCell(currentlyPlayingSongNumber);
-        prevSongElement.html(pauseButtonTemplate);
 
         // update player bar song name
         updatePlayerBarSong();
@@ -197,7 +183,7 @@ $(function(){
 	setCurrentAlbum(albumPicasso);
 
 	// Set next button listener
-	$('.main-controls .next').click(nextSong);
-	$('.main-controls .previous').click(previousSong);
+	$('.main-controls .next').click(switchSong);
+	$('.main-controls .previous').click(switchSong);
 });
 
