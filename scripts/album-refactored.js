@@ -23,10 +23,12 @@ $(function(){
 
 	 		var songNumber = parseInt($(this).attr('data-song-number'));
 
-	 		// No song is playing
+	 		// No song is playing, start playing new
 	 		if (currentlyPlayingSongNumber === null) {
 
-	 			// Start playing a new song
+	 			// Set the initial volume
+
+
 	 			playSong($(this));
 	 		} 
 
@@ -40,7 +42,7 @@ $(function(){
 	 			// Current song is playing, pause it
 	 			else {
 	 				pauseSong($(this));
-	 		   }
+	 		   	}
 
 	 		// Change to a new song
 	 		} else if (currentlyPlayingSongNumber !== songNumber) {
@@ -51,6 +53,10 @@ $(function(){
 
 	 		    // Stop the current song
 	 		    currentSoundFile.stop();
+	 		    debugger;
+	 		    // Set the seek bar position to current
+	 		    $('.player-bar .fill').width(0);
+	 		    $('.player-bar .thumb').css('left', 0);
 
 	 		    // Start playing a new song
 	 		    playSong($(this));
@@ -126,6 +132,12 @@ $(function(){
 		setVolume(currentVolume);
 	};
 
+	var seek = function(time) {
+	    if (currentSoundFile) {
+	        currentSoundFile.setTime(time);
+	    }
+	}
+
 	var setVolume = function(volume) {
 		if(currentSoundFile) {
 			currentSoundFile.setVolume(volume);
@@ -150,6 +162,91 @@ $(function(){
 	    	$newRow = createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
 	    	$albumSongList.append($newRow);
 	    }
+	};
+
+	var updateSeekBarWhileSongPlays = function() {
+	    if (currentSoundFile) {
+	        
+	        currentSoundFile.bind('timeupdate', function(event) {
+
+	            var seekBarFillRatio = this.getTime() / this.getDuration();
+	            var $seekBar = $('.seek-control .seek-bar');
+	
+	            updateSeekPercentage($seekBar, seekBarFillRatio);
+	        });
+	    }
+	};
+
+	var updateSeekPercentage = function($seekBar, seekBarFillRatio) {
+	   var offsetXPercent = seekBarFillRatio * 100;
+	   // Make sure the volume is between 0-100
+	   offsetXPercent = Math.max(0, offsetXPercent);
+	   offsetXPercent = Math.min(100, offsetXPercent);
+	
+	   // #2
+	   var percentageString = offsetXPercent + '%';
+	   $seekBar.find('.fill').width(percentageString);
+	   $seekBar.find('.thumb').css({left: percentageString});
+	};
+
+	var setupSeekBars = function() {
+		// Find both volume / audio control seekbars
+	    var $seekBars = $('.player-bar .seek-bar');
+	
+		// Move the thumb when the bar is clicked
+	    $seekBars.click(function(event) {
+	    	//debugger;
+	        // event.pageX = offset of click from page left
+	        // $(this).offset().left = offset of bar from page left
+	        // offsetX = amount the playbar moved
+	        // barWidth = total width of playbar
+	        var offsetX = event.pageX - $(this).offset().left;
+	        var barWidth = $(this).width();
+	        
+	        // Find ratio seekbar changed
+	        var seekBarFillRatio = offsetX / barWidth;
+	
+	        // Actually update the position of the thumb
+	        updateSeekPercentage($(this), seekBarFillRatio);
+	        
+	        // Change the currentSoundFile's position
+	        if ($(this).parent().attr('class') == 'seek-control') {
+	        	seek(seekBarFillRatio * currentSongFromAlbum.duration);
+	        }
+	        else {
+	        	setVolume(seekBarFillRatio * 100);
+	        }
+	    });
+
+	    // Allow user to drag the thumb 
+	    $seekBars.find('.thumb').mousedown(function(event) {
+	        // Find the seekbar
+	        var $seekBar = $(this).parent();
+	    
+	        // Make thumb move on drag
+	        $(document).bind('mousemove.thumb', function(event){
+	            var offsetX = event.pageX - $seekBar.offset().left;
+	            var barWidth = $seekBar.width();
+	            var seekBarFillRatio = offsetX / barWidth;
+	    
+	            updateSeekPercentage($seekBar, seekBarFillRatio);
+
+	            // Change the currentSoundFile's position
+	            if ($(this).parent().attr('class') == 'seek-control') {
+	            	seek(seekBarFillRatio * currentSongFromAlbum.duration);
+	            }
+	            else {
+	            	setVolume(seekBarFillRatio * 100);
+	            }
+	        });
+	    
+	        // Make thumb stop moving when unclicked
+	        $(document).bind('mouseup.thumb', function() {
+	            $(document).unbind('mousemove.thumb');
+	            $(document).unbind('mouseup.thumb');
+	        });
+
+	    });
 	};
 
 	var updatePlayerBarSong = function() {
@@ -252,6 +349,8 @@ $(function(){
 	
 	// Set random album -- testing
 	setCurrentAlbum(albumPicasso);
+
+	setupSeekBars();
 
 	// Set next button listener
 	$('.main-controls .next').click(nextSong);
