@@ -289,4 +289,3 @@ $(function(){
 	$('.main-controls .previous').click(previousSong);
 	$('.main-controls .play-pause').click(togglePlayFromPlayerBar);
 });
-
