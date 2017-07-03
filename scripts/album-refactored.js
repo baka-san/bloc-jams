@@ -13,7 +13,7 @@ $(function(){
 	     + '  <td class="song-item-number" data-song-number="' + songNumber
 	     + '">' + songNumber + '</td>'
 	     + '  <td class="song-item-title">' + songName + '</td>'
-	     + '  <td class="song-item-duration">' + songLength + '</td>'
+	     + '  <td class="song-item-duration">' + filterTimeCode(songLength) + '</td>'
 	     + '</tr>'
 	     ;
 
@@ -75,14 +75,14 @@ $(function(){
 	 			setSong(songNumber);
 	 		}
 
+	 		// Set the audio file to play
+	 		currentSoundFile.play();
+
 	 		// update player bar song name
 	 		updatePlayerBarSong();
 
 	 		// change player bar play button to pause
 	 		$('.play-pause > span').attr('class', 'ion-pause')
-
-	 		// Set the audio file to play
-	 		currentSoundFile.play();
 
 	 		// Make the seek bar stay updated as song plays
 	 		updateSeekBarWhileSongPlays();
@@ -130,7 +130,7 @@ $(function(){
 		currentlyPlayingSongNumber = parseInt(songNumber);
 		currentSongFromAlbum = currentAlbum.songs[songNumber - 1];
 		currentSoundFile = new buzz.sound(currentSongFromAlbum.audioUrl, {
-			formats: ['mp3'],
+			formats: ['mp3', ''],
 			preload: true
 		});
 		setVolume(currentVolume);
@@ -178,12 +178,43 @@ $(function(){
 	        
 	        currentSoundFile.bind('timeupdate', function(event) {
 
-	            var seekBarFillRatio = this.getTime() / this.getDuration();
+	        	// Current time in player
+	        	var currentTime = this.getTime();
+
+	            var seekBarFillRatio = currentTime / this.getDuration();
 	            var $seekBar = $('.seek-control .seek-bar');
 	
 	            updateSeekPercentage($seekBar, seekBarFillRatio);
+
+	            // Update current time in the player bar
+	            setCurrentTimeInPlayerBar(currentTime);
 	        });
 	    }
+	};
+
+	var setCurrentTimeInPlayerBar = function(currentTime) {
+		currentTime = filterTimeCode(currentTime);
+		$('.player-bar .current-time').text(currentTime);
+
+	};
+
+	var setTotalTimeInPlayerBar = function(totalTime) {
+		totalTime = filterTimeCode(totalTime);
+		//alert(totalTime);
+		$('.player-bar .total-time').text(totalTime);
+	};
+	
+	var filterTimeCode = function(timeInSeconds) {
+		var displayHours = Math.floor(timeInSeconds / 3600)
+		var displayMin = Math.floor(timeInSeconds / 60) - displayHours*60;
+		var displaySec = Math.floor(timeInSeconds) - (displayMin*60) - (displayHours*3600);
+
+		displayHours = (displayHours > 0) ? displayHours + ':' : '';
+		displayMin = (displayMin >= 10) ? displayMin : '0' + displayMin; 
+		displaySec = (displaySec >= 10) ? displaySec : '0' + displaySec;
+
+		//alert(displayMin + ':' + displaySec);
+		return displayHours + displayMin + ':' + displaySec;
 	};
 
 	var updateSeekPercentage = function($seekBar, seekBarFillRatio) {
@@ -270,6 +301,13 @@ $(function(){
 		$('.player-bar .artist-name').text(currentAlbum.artist);
 		$('.player-bar .song-name').text(currentSongFromAlbum.title);
 		$('.player-bar .artist-song-mobile').text(currentSongFromAlbum.title + ' - ' + currentAlbum.artist);
+	 	
+	 	// .getDuration() is firing before currentSoundFile is set,
+	 	// though it works during debugger...
+	 	//var totalTime = currentSoundFile.getDuration();
+
+		var totalTime = currentSongFromAlbum.duration;
+		setTotalTimeInPlayerBar(totalTime);
 	};
 
 	var trackIndex = function(album, song) {

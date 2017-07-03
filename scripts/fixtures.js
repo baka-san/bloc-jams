@@ -17,7 +17,8 @@ var albumPicasso = {
         { title: 'Green', duration: 103.96, audioUrl: 'assets/music/green' },
         { title: 'Red', duration: 268.45, audioUrl: 'assets/music/red' },
         { title: 'Pink', duration: 153.14, audioUrl: 'assets/music/pink' },
-        { title: 'Magenta', duration: 374.22, audioUrl: 'assets/music/magenta' } 
+        { title: 'Magenta', duration: 374.22, audioUrl: 'assets/music/magenta'}
+        //{ title: 'Long Song', duration: 5000.00, audioUrl: '' } 
     ]
 };
 
