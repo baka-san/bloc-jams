@@ -29,7 +29,6 @@ $(window).load(function() {
 
     $collectionContainer.append($newThumbnail);
   }
-
 });
 
 //========= VANILA JAVASCRIPT ============

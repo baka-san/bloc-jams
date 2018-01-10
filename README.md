@@ -1,2 +1,2 @@
 # bloc-jams
-A Spotify Replica 
+A jQuery build streaming service similar to Spotify.
